@@ -2,7 +2,7 @@
 #ifndef GO_ESCAPE_H
 #define GO_ESCAPE_H
 
-
+#include "gogo.h"
 
 
 // Used for a connection graph
@@ -16,8 +16,12 @@ class Escape_analysis
 
     };
 
+    // This is for function.
     enum Escape_level
     {
+      // Status for function
+      // ESCAPE_FUNC_XXX
+      // need to be clearer
 
     };
 
@@ -55,12 +59,29 @@ class Escape_analysis
 
 class Escape_node
 {
-  // Record the depth of a 
+  enum {
+    // ESCAPE_GLOBAL,
+    // ESCAPE_ARG,   // I think it is not needed.
+    // ESCAPE_NONE,
+    // ESCAPE_UNKNOWN,
+    ESCAPE_XXX;
+    // ...
+
+
+
+  }
+  // Record the depth of node in the graph.
   int loopdepth;
-
-
-
-
+  
+  // A enum to record the Escape status.
+  // 
+  int Escape_status;
+  
+  // Run Escape_func function to get the edges.
+  // edges(a, b)
+  // a -- reference --> b
+  vector<Escape_node*> edges;
 
 
 }
+
