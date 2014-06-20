@@ -13,6 +13,12 @@ Escape_analysis::compute_gogo_to_functions(Gogo* gogo)
   // now this.function_ is a list of functions.
 }
 
+void
+Escape_analysis::add_caller_callee(Named_object* caller, const Named_object* callee)
+{
+  this.edge[caller].push_back(callee);
+}
+
 // used to traverse Gogo to function
 class Call_graph_traverse_functions : public Traverse
 {
@@ -76,5 +82,9 @@ Call_graph_traverse_expressions::expression(Expression** expr)
   const Named_object* called_function = call_expression->get_function_object;
 
   if (called_function != NULL) {
-    ea->add_caller_callee();
+    ea->add_caller_callee(this->function_, called_function);
+  }
+  //TODO now return EXIT
+  // return TRAVERSE_CONTINUE;
+  return TRAVERSE_EXIT;
 }

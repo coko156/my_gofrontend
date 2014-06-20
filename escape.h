@@ -7,6 +7,10 @@
 #include <vector>
 #include <map>
 
+class Named_object;
+class Expression;
+class Call_expression;
+
 // Firstly get the minimal set of function to run escape analysis on.
 // That is to find strong connected component.
 // Run escapes on total IR.
@@ -35,6 +39,10 @@ class Escape_analysis
     void
     compute_gogo_to_functions(Gogo*);
 
+    // add a edge between caller and callee function
+    void
+    add_caller_callee(Named_object* caller, const Named_object* callee);
+
   private:
 
     typedef std::vector<Named_object*> Named_object_vec;
@@ -44,4 +52,6 @@ class Escape_analysis
 
     // used to store functions in a package.
     Named_object_vec functions_;
+
+    Caller_map edge;
 };
