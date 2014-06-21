@@ -41,17 +41,21 @@ class Escape_analysis
 
     // add a edge between caller and callee function
     void
-    add_caller_callee(Named_object* caller, const Named_object* callee);
+    add_caller_callee(const Named_object* caller, const Named_object* callee);
+
+	void add_function(Named_object * no)
+	{ this->functions.insert(no); }
 
   private:
 
     typedef std::vector<Named_object*> Named_object_vec;
+    typedef std::set<Named_object*>    Named_object_set;
 
-    // map<caller, callee_vector>
-    typedef std::map<const Named_object*, Named_object_vec> Caller_map;
+    // map<caller, callee_set>
+    typedef std::map<const Named_object*, Named_object_set> Caller_map;
 
     // used to store functions in a package.
-    Named_object_vec functions_;
+    Named_object_set functions_;
 
     Caller_map edge;
 };
