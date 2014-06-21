@@ -20,7 +20,7 @@ Escape_analysis::compute_gogo_to_functions(Gogo* gogo)
 }
 
 void
-Escape_analysis::add_caller_callee(const Named_object* caller, const Named_object* callee)
+Escape_analysis::add_caller_callee(Named_object* caller, const Named_object* callee)
 {
   this->edge[caller].insert(callee);
 }

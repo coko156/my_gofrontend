@@ -11,13 +11,24 @@ class Named_object;
 class Expression;
 class Call_expression;
 
-// Firstly get the minimal set of function to run escape analysis on.
-// That is to find strong connected component.
-// Run escapes on total IR.
+
+// escapes(Gogo*) is a function to be called in optimize.
+// and then we get a set of ordered functions
 //
-// Then build the connection graph for each set of function.
+//   build a connection graph on each set of function
+// 
+//   Initialization: for one set, make it ordered
+//   then dig into it and :
+//      1. analysis parameters(can build the graph directly)
+//      2. analysis on inner expressions
+//   for each expression/statement, decide to build what edge.
 //
-// Then Walk the graph to give the variables a tag.
+//  mark each reference with level ++
+//  and each dereference with level --
+//    when a variable's level == 0 means that hit the root variable(or object)
+//    and if the loopdepth of current variable is defferent from the object's
+//    we can mark current variable and all its upstream ESCAPE_HEAP
+//    also all upstreams of a fake node marked ESCAPE_HEAP
 
 class Escape_analysis 
 {
