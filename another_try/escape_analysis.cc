@@ -1,25 +1,16 @@
-// typedef : Named_object_vector, Caller_map
+#include "Escape_analysis.h"
 
-// 源代码的Escape_analysis::initialize_escape_info有问题。它接收的
-// 参数的Named_object其实是个Function类型，这应该是在分析单个函数之// 前对该Named_object对应的函数所作的初始化。但明显这个初始化不够充// 分吧！
-
-class Escape_analysis {
-	
-	void perform(Gogo *) ;
-	void compute_functions_to_process(Gogo *) ;
-	void compute_analysis_results() ;
-	Escape_analysis_info * initialize_escape_info(Named_object *) ;
+void 
+Escape_analysis :: perform(Gogo * gogo)
+{
+    Escape_analysis escape_analysis;
+	escape_analysis.compute_functions_to_process(gogo);
+	escape_analysis.compute_analysis_results();
 }
 
-// 从Gogo里抠除function并排好序以便处理，存到this->sorted_functions_
 void 
 Escape_analysis :: compute_functions_to_process(Gogo * gogo)
 {
-	// 看来有必要注释一下这句..=_=
-	// traverse会分析当前环境的所有东西并分类搞好给我们，
-	// 只要我们根据需求继承了class Traverse并重写相应的函数即可，
-	// 如Call_graph_traverse_functions重写了int function()说明"我
-	// 只要function，其它都扔掉吧~"
 	Call_graph_traverse_functions cgtf(this) ;
 	gogo->traverse(&cgtf) ;
 
@@ -129,13 +120,15 @@ Escape_analysis :: compute_analysis_results()
 		}
 	}
 }
-
-void 
-Escape_analysis :: perform(Gogo * gogo)
+// FIXME 总觉得要么还欠了点什么，要么这么设计太繁琐
+Escape_analysis_info * 
+Escape_analysis :: initialize_escape_info(Named_object * no)
 {
-    Escape_analysis escape_analysis;
-	escape_analysis.compute_functions_to_process(gogo);
-	escape_analysis.compute_analysis_results();
+	Escape_analysis_info * escape_info = new Escape_analysis_info(this);
+
+	this->escape_info_map_[no] = escape_info;
+
+	return escape_info;
 }
 
 
@@ -154,6 +147,20 @@ class Call_graph_traverse_functions : public Traverse
   	// The escape analysis information.
   	Escape_analysis* escape_analysis_ctx_;
 };
+// add function into Escape_analysis_info::functions_ and explore the expressions of that function 
+int
+Call_graph_traverse_functions :: function(Named_object * no)
+{
+    this->escape_analysis_ctx_->add_function(no);
+
+    go_assert(no->is_function());
+    Function * func = no->func_value();
+    Call_graph_traverse_expressions cgte(this->escape_analysis_ctx, no);
+    func->traverse(&cgte);
+
+    return TRAVERSE_CONTINUE;
+}
+
 
 class Escape_analysis_traverse_expressions : public Traverse
 class Escape_analysis_traverse_statements : public Traverse
