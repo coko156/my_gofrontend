@@ -153,7 +153,6 @@ Escape_analysis::add_caller_callee(Named_object* caller,
   this->edge[caller].insert(callee);
 }
 
-// MARK 待删注释==================  方便写代码而已。。。。。
 
 class Escape_analysis_traverse_statements : public Traverse
 {
