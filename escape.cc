@@ -6,6 +6,7 @@ class Call_graph_traverse_functions;
 class Call_graph_traverse_expressions;
 
 
+// As a main function for escape analysis.
 void 
 Escape_analysis::escape(Gogo* gogo)
 {
@@ -13,15 +14,17 @@ Escape_analysis::escape(Gogo* gogo)
   this->compute_analysis_result();
 }
 
+// this->function_ is a set of functions.
+void
 Escape_analysis::compute_gogo_to_functions(Gogo* gogo)
 {
   Call_graph_traverse_functions cgtf(this);
   gogo->traverse(&cgtf);
-  // now this->function_ is a set of functions.
 }
 
 // Compute the analysis results for the current package
-void compute_analysis_result()
+void 
+Escape_analysis::compute_analysis_result()
 {
   for (Named_object_set::iterator p = this->functions_.begin();
        p != this->functions_.end();
@@ -100,6 +103,8 @@ Escape_analysis::visit(Escape_analysis_object * n, std::stack<Escape_analysis_ob
   // FIXME. Maybe the edges contain 2 types of edge, defer edge and pointsto edge,
   // but now I named them as "edge".
   // I will separate them later.
+  // FIXME. santo: Why you think the different edges have influences?
+  // give me a reason.... = =
   for (std::set<Escape_analysis_object*>::iterator p = n->edge.begin();
      p != n->edge.end();
      p++)
