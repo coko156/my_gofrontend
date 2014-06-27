@@ -97,10 +97,12 @@ class Escape_analysis_object
     { return this->escape_level; }
 
   private :
+    // use as a mark?!
     int walkgen;
 
     int escape_level;
 
-    // FIXME. should separate edge into defer edge and pointsto edge
-    std::set<Escape_analysis_object*> edge;
+    // // FIXME. should separate edge into defer edge and pointsto edge
+    // Don't need to do this.
+    // std::set<Escape_analysis_object*> edge;
 }
